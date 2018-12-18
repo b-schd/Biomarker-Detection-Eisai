@@ -196,40 +196,40 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
 %     y = cell2mat(Yhat);
     
     if numel(szIdx)>0
-    channels = cell(size(szIdx,1),1);
-    for c = 1:numel(channels)
-        channels{c} = ch;
-    end
-    uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ',layerOption)
-    
-    %duration features
-    szIdx = sort(szIdx)
-    dsz = diff(szIdx);
-    finalSzIdx = [];
-    tmpIdx = szIdx;
-    sidx = 1;
-    eidx = 1;
-    for i = 1:numel(dsz)
-        if dsz(i) > (winLen-winDisp)*fs
-            toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
-            finalSzIdx = [finalSzIdx; toAdd];
-            sidx = eidx + 1;
-            eidx = sidx;
-        else
-            eidx = eidx + 1;
+        channels = cell(size(szIdx,1),1);
+        for c = 1:numel(channels)
+            channels{c} = ch;
         end
+        uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ',layerOption)
+
+        %duration features
+        szIdx = sort(szIdx)
+        dsz = diff(szIdx);
+        finalSzIdx = [];
+        tmpIdx = szIdx;
+        sidx = 1;
+        eidx = 1;
+        for i = 1:numel(dsz)
+            if dsz(i) > (winLen-winDisp)*fs
+                toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
+                finalSzIdx = [finalSzIdx; toAdd];
+                sidx = eidx + 1;
+                eidx = sidx;
+            else
+                eidx = eidx + 1;
+            end
+        end
+        toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
+        finalSzIdx = [finalSzIdx; toAdd];
+
+        durations = finalSzIdx(:,2)-finalSzIdx(:,1);
+        finalSzIdx = finalSzIdx(durations>(winLen*fs*2),:);
+        finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %left shift detections
+
+        channels = cell(size(finalSzIdx,1),1);
+        for c = 1:numel(channels)
+            channels{c} = ch;
+        end
+        uploadAnnotations(dataset,sprintf('%s_detected_seizures',newLayerPrefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
     end
-    toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
-    finalSzIdx = [finalSzIdx; toAdd];
-    
-    durations = finalSzIdx(:,2)-finalSzIdx(:,1);
-    finalSzIdx = finalSzIdx(durations>(winLen*fs*2),:);
-    finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %left shift detections
-    
-    channels = cell(size(finalSzIdx,1),1);
-    for c = 1:numel(channels)
-        channels{c} = ch;
-    end
-    uploadAnnotations(dataset,sprintf('%s_detected_seizures',newLayerPrefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
-end
 end
