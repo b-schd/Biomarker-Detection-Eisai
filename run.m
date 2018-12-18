@@ -179,7 +179,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix)
     uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ','overwrite')
     
     %duration features
-    szIdx = sort(szIdx)
+    szIdx = sort(szIdx);
     dsz = diff(szIdx);
     finalSzIdx = [];
     tmpIdx = szIdx;
