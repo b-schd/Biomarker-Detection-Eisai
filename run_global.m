@@ -176,7 +176,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
             f = load(fsave);
             feat = f.feat;
         else
-            data = dataset.getvalues(startBlockPt:endBlockPt,ch{1});
+            data = dataset.getvalues(startBlockPt:endBlockPt,ch);
             feat = runFuncOnWin(data,fs,winLen,winDisp,features);
             save(fsave,'feat','-v7.3')
         end
@@ -196,7 +196,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
 %     y = cell2mat(Yhat);
     channels = cell(size(szIdx,1),1);
     for c = 1:numel(channels)
-        channels{c} = ch{1};
+        channels{c} = ch;
     end
     uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ',layerOption)
     
@@ -226,7 +226,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
     
     channels = cell(size(finalSzIdx,1),1);
     for c = 1:numel(channels)
-        channels{c} = ch{1};
+        channels{c} = ch;
     end
     uploadAnnotations(dataset,sprintf('%s_detected_seizures',newLayerPrefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
 
