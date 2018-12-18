@@ -43,6 +43,8 @@ winDisp = 1;
 mode = 'global' %same # of electrodes, interchangeable
 %% Train Model
 % for each dataset
+f_X = [];
+f_Y = [];
 for i = 1:numel(session.data)
     fprintf('Working on %s\n',session.data(i).snapName);
     feat = [];
@@ -67,17 +69,21 @@ for i = 1:numel(session.data)
         feat2 =cell2mat(feat2);
         X = [feat; feat2];
         Y = [ones(size(feat,1),1); zeros(size(feat2,1),1)];
+        f_X = [f_X;X];
+        f_Y = [f_Y;Y];
+    else
+        fprintf('No Annotations\n');
+    end
+end
         % model = TreeBagger(100,X,Y);
         c = [0 50; 1 0];
-        model = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
+        model = fitcsvm(f_X,f_Y,'KernelFunction','linear','Cost',c);
         %lr = mnrfit(X,categorical(Y+1))
         %cv = crossval(model);
         %kfoldLoss(cv)
         %% detect for current dataset
-        run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-indiv')
-    else
-        fprintf('No Annotations\n');
-    end
+for i = 1:numel(session.data)
+    run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-indiv')
 end
 
 %%
@@ -180,7 +186,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix)
     uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ','overwrite')
     
     %duration features
-    szIdx = sort(szIdx);
+    szIdx = sort(szIdx)
     dsz = diff(szIdx);
     finalSzIdx = [];
     tmpIdx = szIdx;
