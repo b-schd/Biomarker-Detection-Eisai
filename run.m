@@ -52,12 +52,12 @@ for i = 1:numel(session.data)
     layer = layer_names(ismember(layer_names,'True_Seizures'));
     %if layer exists
     if ~isempty(layer)
-        [feat, ch] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,LLFn);
+        [feat, ch] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,'LL');
     end
     layer = layer_names(ismember(layer_names,'Non_Seizures'));
     %if layer exists
     if ~isempty(layer)
-        feat2 = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,LLFn);
+        feat2 = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,'LL');
     end
     
     if ~isempty(feat) && ~isempty(feat2)
@@ -102,7 +102,7 @@ function [splitEvents, splitTimes, splitCh] = split_annotations(events,times,cha
     end
 end
 
-function [feat, chs] = extractFeaturesFromAnnotationLayer(dataset,layerName,winLen,winDisp,fs,featFn)
+function [feat, chs] = extractFeaturesFromAnnotationLayer(dataset,layerName,winLen,winDisp,fs,feature)
     [~, timesUSec, chs] = getAnnotations(dataset,layerName);
     annotIdx = timesUSec/1e6*fs;
     %If duration of annotation is 0, assume 10 second duration
@@ -114,7 +114,7 @@ function [feat, chs] = extractFeaturesFromAnnotationLayer(dataset,layerName,winL
         data = dataset.getvalues(annotIdx(k,1):annotIdx(k,2),chs{k});
         %extract features over windows
         %features = extract_features(data,fs)
-        feat{k} = runFuncOnWin(data,fs,winLen,winDisp,'LL');
+        feat{k} = runFuncOnWin(data,fs,winLen,winDisp,feature);
         %out{j} = cell2mat(runFuncOnWin(data,fs,2,1,@calc_featureswithfreqcorr));
     end
     % should all be the same since annotations should be split before
