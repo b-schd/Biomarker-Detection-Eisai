@@ -1,10 +1,10 @@
-fn = dir('Jensen_Eisai*.mat');
+fn = dir('Jensen_Eisai*0.mat');
 
 for i =1:numel(fn)
     curfn = fn(i).name;
     t = load(curfn);
     feat = t.feat;
-    curfn = strrep(curfn,'groupA-ch1-5-idx','groupA-ch1_5-idx');
+    curfn = strrep(curfn,'0.mat','0-LL.mat');
     fprintf('%s\n',curfn)
     save(curfn,'feat')
 end

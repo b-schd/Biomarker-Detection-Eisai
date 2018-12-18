@@ -200,7 +200,8 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
         for c = 1:numel(channels)
             channels{c} = ch;
         end
-        uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ',layerOption)
+        szIdxRange = [szIdx szIdx+winLen*fs]
+        uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdxRange/fs*1e6,channels,'SZ',layerOption)
 
         %duration features
         szIdx = sort(szIdx)
