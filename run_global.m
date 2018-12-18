@@ -96,7 +96,7 @@ for i = 1:numel(session.data)
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
-            run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-indiv','append')
+            run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-global','append')
         end
     end
 end
@@ -194,6 +194,8 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
 %     %% store true detections
 %     Yhat = predict(model,parFeats);
 %     y = cell2mat(Yhat);
+    
+    if numel(szIdx)>0
     channels = cell(size(szIdx,1),1);
     for c = 1:numel(channels)
         channels{c} = ch;
@@ -229,5 +231,5 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
         channels{c} = ch;
     end
     uploadAnnotations(dataset,sprintf('%s_detected_seizures',newLayerPrefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
-
+end
 end
