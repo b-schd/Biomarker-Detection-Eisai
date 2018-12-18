@@ -74,6 +74,8 @@ for i = 1:numel(session.data)
         %kfoldLoss(cv)
         %% detect for current dataset
         run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-indiv')
+    else
+        fprintf('No Annotations\n');
     end
 end
 
