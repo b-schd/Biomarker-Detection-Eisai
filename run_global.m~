@@ -95,6 +95,7 @@ for i = 1:numel(session.data)
     if mode=='global'
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
+            ch = find(ismember(channels,curCh));
             run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-indiv','append')
         end
     end
@@ -168,8 +169,8 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
     for i = 1:numBlocks
         startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
-        fprintf('Block %d of %d, ch%d_%d idx %d:%d\n',i,numBlocks,ch{1}(1),ch{1}(2),startBlockPt,endBlockPt);
-        fsave = sprintf('%s-ch%d_%d-idx-%d-%d.mat',dataset.snapName,ch{1}(1),ch{1}(2),startBlockPt,endBlockPt);
+        fprintf('Block %d of %d, ch%d_%d idx %d:%d\n',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
+        fsave = sprintf('%s-ch%d_%d-idx-%d-%d.mat',dataset.snapName,ch(1),ch(2),startBlockPt,endBlockPt);
         if ~isempty(dir(fsave))
             fprintf('%s - mat found, loading\n',fsave);
             f = load(fsave);

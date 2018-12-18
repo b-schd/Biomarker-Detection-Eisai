@@ -169,15 +169,15 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
     for i = 1:numBlocks
         startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
-        fprintf('Block %d of %d, ch%d_%d idx %d:%d\n',i,numBlocks,ch{1}(1),ch{1}(2),startBlockPt,endBlockPt);
-        fsave = sprintf('%s-ch%d_%d-idx-%d-%d.mat',dataset.snapName,ch{1}(1),ch{1}(2),startBlockPt,endBlockPt);
+        fprintf('Block %d of %d, ch%d_%d idx %d:%d\n',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
+        fsave = sprintf('%s-ch%d_%d-idx-%d-%d-%s.mat',dataset.snapName,ch(1),ch(2),startBlockPt,endBlockPt,features);
         if ~isempty(dir(fsave))
             fprintf('%s - mat found, loading\n',fsave);
             f = load(fsave);
             feat = f.feat;
         else
             data = dataset.getvalues(startBlockPt:endBlockPt,ch{1});
-            feat = runFuncOnWin(data,fs,winLen,winDisp,'LL');
+            feat = runFuncOnWin(data,fs,winLen,winDisp,features);
             save(fsave,'feat','-v7.3')
         end
         yhat = predict(model,feat);
