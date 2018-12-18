@@ -95,7 +95,6 @@ for i = 1:numel(session.data)
     if mode=='global'
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
-            ch = find(ismember(channels,curCh));
             run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-indiv','append')
         end
     end
