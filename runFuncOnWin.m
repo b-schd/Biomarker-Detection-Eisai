@@ -10,9 +10,7 @@ function out = runFuncOnWin(x,fs,winLen,winDisp,featFn)
 %anonymous functions
 %EnergyFn = @(x) mean(x.^2);
 %ZCFn = @(x) sum((x(1:end-1,:)>repmat(mean(x),size(x,1)-1,1)) & x(2:end,:)<repmat(mean(x),size(x,1)-1,1) | (x(1:end-1,:)<repmat(mean(x),size(x,1)-1,1) & x(2:end,:)>repmat(mean(x),size(x,1)-1,1)));
-if strcmp(featFn,'LL')
-    featFn = @(x,fs) nanmean(abs(diff(x)));
-end
+%LLFn = @(x,fs) nanmean(abs(diff(x)));
 NumWins = @(xLen, fs, winLen, winDisp)floor((xLen-(winLen-winDisp)*fs)/(winDisp*fs));
 
 numWindows = NumWins(length(x),fs,winLen,winDisp);
