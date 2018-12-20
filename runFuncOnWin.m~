@@ -17,24 +17,23 @@ numWindows = NumWins(length(x),fs,winLen,winDisp);
 
 out = cell(numWindows,1);
 maxLength = 0;
-nanFlag = 0;
 for i = 1:numWindows
     %find current window
     data = x(1+(i-1)*(winDisp*fs):((i-1)*(winDisp)+winLen)*fs,:);
     try
         out{i} = featFn(data,fs);
         if maxLength == 0
-            maxLength = numel(out{i});
+            maxLength == numel(out{i}))
         end
     catch
         fprintf('Unable to calculate for window %d\n',i);
         out{i} = NaN;
-        nanFlag = 1;
+        nanflag = 1;
     end
 end
-if nanFlag
+if nanflag
     for i = 1:numel(out)
-        if isnan(out{i})
+        if out{i} == NaN
             out{i} = NaN(1,maxLength);
         end
     end

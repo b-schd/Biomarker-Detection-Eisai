@@ -177,7 +177,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,featFn,prefix,layerOptio
     numBlocks = ceil((stopTime-startTime)/blockLenSecs);
     startIdx = 1;
     szIdx = [];
-    for i = 1:numBlocks
+    for i = 23:numBlocks
         startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
         fprintf('Block %d of %d, ch%d_%d idx %d:%d\n',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
@@ -222,7 +222,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,featFn,prefix,layerOptio
         sidx = 1;
         eidx = 1;
         for i = 1:numel(dsz)
-            if dsz(i) > (winLen-winDisp)*fs
+            if dsz(i) > (winLen)*fs
                 toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
                 finalSzIdx = [finalSzIdx; toAdd];
                 sidx = eidx + 1;
@@ -236,7 +236,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,featFn,prefix,layerOptio
 
         durations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(durations>(winLen*fs*2),:);
-        finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %left shift detections
+        finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
 
         channels = cell(size(finalSzIdx,1),1);
         for c = 1:numel(channels)
