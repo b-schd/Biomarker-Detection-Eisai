@@ -52,10 +52,10 @@ winDisp = 1;
 switch feature
     case 'freq'
         featFn = @calc_featureswithfreqcorr;
-        prefix = 'freq-global';
+        prefix = 'freq';
     case 'LL'
         featFn = LLFn;
-        prefix = 'LL-global';
+        prefix = 'LL';
 end
         
 
@@ -101,7 +101,7 @@ for i = 1:numel(session.data)
             %cv = crossval(model);
             %kfoldLoss(cv)
             %% detect for current dataset
-            run_detections(session.data(i),model,winLen,winDisp,ch{1},featFn,'LL-indiv','append')
+            run_detections(session.data(i),model,winLen,winDisp,ch{1},featFn,strcat(prefix,'-indiv'),'append')
         end
     else
         fprintf('No Annotations\n');
@@ -121,7 +121,7 @@ for i = 1:numel(session.data)
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
-            run_detections(session.data(i),model,winLen,winDisp,ch,featFn,prefix,'append')
+            run_detections(session.data(i),model,winLen,winDisp,ch,featFn,strcat(prefix,'-global'),'append')
         end
     end
 end
