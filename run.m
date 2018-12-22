@@ -117,7 +117,7 @@ kfoldLoss(cv)
 for i = 1:numel(session.data)
     channels = session.data(i).channelLabels(:,1);
     %run through each mouse combination
-    if globalmode==1
+    if globalMode==1
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
