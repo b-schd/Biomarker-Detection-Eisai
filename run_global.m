@@ -41,6 +41,18 @@ groupChannels = {
 %anonymous functions
 %EnergyFn = @(x) mean(x.^2);
 %ZCFn = @(x) sum((x(1:end-1,:)>repmat(mean(x),size(x,1)-1,1)) & x(2:end,:)<repmat(mean(x),size(x,1)-1,1) | (x(1:end-1,:)<repmat(mean(x),size(x,1)-1,1) & x(2:end,:)>repmat(mean(x),size(x,1)-1,1)));
+LLFn = @(x,fs) nanmean(abs(diff(x)));
+
+feature='freq';
+switch feature
+    case 'freq'
+        featFn = @calc_featureswithfreqcorr;
+        prefix = 'freq-global';
+    case 'LL'
+        featFn = LLFn;
+        prefix = 'LL-global';
+end
+        
 
 %% split layer based on channels
 %[~,splitTimes,splitCh] = split_annotations(allEvents, timesUSec, eventChannels);
@@ -61,12 +73,12 @@ for i = 1:numel(session.data)
     layer = layer_names(ismember(layer_names,'True_Seizures'));
     %if layer exists
     if ~isempty(layer)
-        [feat, ch] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,'LL');
+        [feat, ch] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,featFn);
     end
     layer = layer_names(ismember(layer_names,'Non_Seizures'));
     %if layer exists
     if ~isempty(layer)
-        [feat2, ch2] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,'LL');
+        [feat2, ch2] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,featFn);
     end
     
     if ~isempty(feat) && ~isempty(feat2)
@@ -85,8 +97,8 @@ end
 c = [0 50; 1 0];
 model = fitcsvm(f_X,f_Y,'KernelFunction','linear','Cost',c);
 %lr = mnrfit(X,categorical(Y+1))
-%cv = crossval(model);
-%kfoldLoss(cv)
+cv = crossval(model);
+kfoldLoss(cv)
 %% detect for current dataset
 for i = 1:numel(session.data)
     channels = session.data(i).channelLabels(:,1);
@@ -95,7 +107,7 @@ for i = 1:numel(session.data)
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
-            run_detections(session.data(i),model,winLen,winDisp,ch,'LL','LL-global','append')
+            run_detections(session.data(i),model,winLen,winDisp,ch,featFn,prefix,'append')
         end
     end
 end
@@ -125,7 +137,7 @@ function [splitEvents, splitTimes, splitCh] = split_annotations(events,times,cha
     end
 end
 
-function [feat, chs] = extractFeaturesFromAnnotationLayer(dataset,layerName,winLen,winDisp,fs,feature)
+function [feat, chs] = extractFeaturesFromAnnotationLayer(dataset,layerName,winLen,winDisp,fs,featFn)
     [~, timesUSec, chs] = getAnnotations(dataset,layerName);
     annotIdx = timesUSec/1e6*fs;
     %If duration of annotation is 0, assume 10 second duration
@@ -137,7 +149,7 @@ function [feat, chs] = extractFeaturesFromAnnotationLayer(dataset,layerName,winL
         data = dataset.getvalues(annotIdx(k,1):annotIdx(k,2),chs{k});
         %extract features over windows
         %features = extract_features(data,fs)
-        feat{k} = runFuncOnWin(data,fs,winLen,winDisp,feature);
+        feat{k} = runFuncOnWin(data,fs,winLen,winDisp,featFn);
         %out{j} = cell2mat(runFuncOnWin(data,fs,2,1,@calc_featureswithfreqcorr));
     end
     % should all be the same since annotations should be split before
@@ -145,7 +157,7 @@ function [feat, chs] = extractFeaturesFromAnnotationLayer(dataset,layerName,winL
     ch = chs{1};
 end
 
-function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,layerOption)
+function run_detections(dataset,model,winLen,winDisp,ch,featFn,prefix,layerOption)
     datasetName = dataset.snapName;
     fs = dataset.sampleRate;
 
@@ -165,18 +177,18 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
     numBlocks = ceil((stopTime-startTime)/blockLenSecs);
     startIdx = 1;
     szIdx = [];
-    for i = 1:numBlocks
+    for i = 23:numBlocks
         startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
         fprintf('Block %d of %d, ch%d_%d idx %d:%d\n',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
-        fsave = sprintf('%s-ch%d_%d-idx-%d-%d-%s.mat',dataset.snapName,ch(1),ch(2),startBlockPt,endBlockPt,features);
+        fsave = sprintf('%s-ch%d_%d-idx-%d-%d-%s.mat',dataset.snapName,ch(1),ch(2),startBlockPt,endBlockPt,prefix);
         if ~isempty(dir(fsave))
             fprintf('%s - mat found, loading\n',fsave);
             f = load(fsave);
             feat = f.feat;
         else
             data = dataset.getvalues(startBlockPt:endBlockPt,ch);
-            feat = runFuncOnWin(data,fs,winLen,winDisp,features);
+            feat = runFuncOnWin(data,fs,winLen,winDisp,featFn);
             save(fsave,'feat','-v7.3')
         end
         yhat = predict(model,feat);
@@ -200,7 +212,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
             channels{c} = ch;
         end
         szIdxRange = [szIdx szIdx+winLen*fs];
-        uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdxRange/fs*1e6,channels,'SZ',layerOption)
+        %uploadAnnotations(dataset,sprintf('%s_detected_clips',prefix),szIdxRange/fs*1e6,channels,'SZ',layerOption)
 
         %duration features
         szIdx = sort(szIdx);
@@ -210,7 +222,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
         sidx = 1;
         eidx = 1;
         for i = 1:numel(dsz)
-            if dsz(i) > (winLen-winDisp)*fs
+            if dsz(i) > (winLen)*fs
                 toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
                 finalSzIdx = [finalSzIdx; toAdd];
                 sidx = eidx + 1;
@@ -224,12 +236,12 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix,
 
         durations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(durations>(winLen*fs*2),:);
-        finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %left shift detections
+        finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
 
         channels = cell(size(finalSzIdx,1),1);
         for c = 1:numel(channels)
             channels{c} = ch;
         end
-        uploadAnnotations(dataset,sprintf('%s_detected_seizures',newLayerPrefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
+        uploadAnnotations(dataset,sprintf('%s_detected_seizures',prefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
     end
 end

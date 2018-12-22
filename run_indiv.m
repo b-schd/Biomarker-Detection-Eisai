@@ -177,7 +177,7 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix)
     for c = 1:numel(channels)
         channels{c} = ch{1};
     end
-    uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ','overwrite')
+    %uploadAnnotations(dataset,sprintf('%s_detected_clips',newLayerPrefix),szIdx/fs*1e6,channels,'SZ','overwrite')
     
     %duration features
     szIdx = sort(szIdx);
@@ -207,6 +207,6 @@ function run_detections(dataset,model,winLen,winDisp,ch,features,newLayerPrefix)
     for c = 1:numel(channels)
         channels{c} = ch{1};
     end
-    uploadAnnotations(dataset,sprintf('%s_detected_seizures',newLayerPrefix),finalSzIdx/fs*1e6,channels,'SZ','overwrite')
+    uploadAnnotations(dataset,sprintf('%s_seizures',newLayerPrefix),finalSzIdx/fs*1e6,channels,'SZ','append')
 
 end
