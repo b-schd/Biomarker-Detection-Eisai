@@ -1,4 +1,6 @@
 
+function run(feature)
+%feature == 'LL' or 'freq'
 addpath(genpath('../ieeg-matlab-1.13.2'));
 %addpath('~/gdriveshort/Libraries/Utilities/hline_vline');
 addpath(genpath('../portal-matlab-tools/Analysis'))
@@ -44,7 +46,7 @@ groupChannels = {
 LLFn = @(x,fs) nanmean(abs(diff(x)));
 
 % PARAMETERS
-feature='LL';
+%feature='LL';
 indivMode = 1;
 globalMode = 1;
 winLen = 2;
@@ -152,4 +154,4 @@ function [splitEvents, splitTimes, splitCh] = split_annotations(events,times,cha
 end
 
 
-
+end
