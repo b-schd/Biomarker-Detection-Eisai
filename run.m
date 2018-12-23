@@ -1,6 +1,7 @@
 
-function run(feature)
+function run(feature,layerOption)
 %feature == 'LL' or 'freq'
+%layerOption = 'append' or 'overwrite'
 addpath(genpath('../ieeg-matlab-1.13.2'));
 %addpath('~/gdriveshort/Libraries/Utilities/hline_vline');
 addpath(genpath('../portal-matlab-tools/Analysis'))
@@ -103,14 +104,14 @@ for i = 1:numel(session.data)
             %cv = crossval(model);
             %kfoldLoss(cv)
             %% detect for current dataset
-            run_detections(session.data(i),model,winLen,winDisp,ch{1},featFn,strcat(prefix,'-indiv'),'append')
+            run_detections(session.data(i),model,winLen,winDisp,ch{1},featFn,strcat(prefix,'-indiv'),layerOption)
         end
     else
         fprintf('No Annotations\n');
     end
 end
 % model = TreeBagger(100,X,Y);
-c = [0 50; 1 0];
+c = [0 75; 1 0];
 model = fitcsvm(f_X,f_Y,'KernelFunction','linear','Cost',c);
 %lr = mnrfit(X,categorical(Y+1))
 cv = crossval(model);
@@ -123,7 +124,7 @@ for i = 1:numel(session.data)
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
-            run_detections(session.data(i),model,winLen,winDisp,ch,featFn,strcat(prefix,'-global'),'append')
+            run_detections(session.data(i),model,winLen,winDisp,ch,featFn,strcat(prefix,'-global'),layerOption)
         end
     end
 end
