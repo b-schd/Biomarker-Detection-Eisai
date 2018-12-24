@@ -105,7 +105,7 @@ for i = 1:numel(session.data)
         f_Y = [f_Y;Y];
         
         if indivMode==1
-            c = [0 40; 1 0];
+            c = [0 50; 1 0];
             model = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
             %lr = mnrfit(X,categorical(Y+1))
             %cv = crossval(model);
