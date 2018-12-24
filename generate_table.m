@@ -36,3 +36,4 @@ for i = 1:numel(session.data)
     end
 end
 T = cell2table(collate);
+writetable(T,'table.csv')
