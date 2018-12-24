@@ -36,4 +36,6 @@ for i = 1:numel(session.data)
     end
 end
 T = cell2table(collate);
+T.Properties.VariableNames = {'Group' 'Ch1' 'Ch2' 'Layer' 'Start' 'End' 'Duration'}
+
 writetable(T,'table.csv')
