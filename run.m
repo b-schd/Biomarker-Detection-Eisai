@@ -131,7 +131,9 @@ for i = 1:numel(session.data)
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
-            run_detections(session.data(i),model,winLen,winDisp,szdurations, ch,featFn,prefix,'global',layerOption)
+            if ~isempty(ch)
+                run_detections(session.data(i),model,winLen,winDisp,szdurations, ch,featFn,prefix,'global',layerOption)
+            end
         end
     end
 end
