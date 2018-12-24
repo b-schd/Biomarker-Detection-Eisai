@@ -29,7 +29,7 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
             f = load(fsave);
             feat = f.feat;
         else
-            fprintf('...running'\n')
+            fprintf('...running\n')
             data = dataset.getvalues(startBlockPt:endBlockPt,ch);
             feat = runFuncOnWin(data,fs,winLen,winDisp,featFn);
             save(fsave,'feat','-v7.3')
@@ -77,13 +77,14 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
         toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
         finalSzIdx = [finalSzIdx; toAdd];
 
+        finalSzIdx(:,2) = finalSzIdx(:,2) + winLen*fs; %correct for left shift detections
+
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(mean(durations)*0.95*fs),:); %duration threshold min of training durations
         fprintf('Duration threshold: %d seconds\n',mean(durations)*0.95)
         if size(finalSzIdx,1) > 0
-            finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
 
             channels = cell(size(finalSzIdx,1),1);
             for c = 1:numel(channels)

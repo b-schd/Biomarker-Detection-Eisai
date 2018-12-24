@@ -115,7 +115,7 @@ for i = 1:numel(session.data)
     end
 end
 % model = TreeBagger(100,X,Y);
-c = [0 75; 1 0];
+c = [0 50; 1 0];
 model = fitcsvm(f_X,f_Y,'KernelFunction','linear','Cost',c);
 %lr = mnrfit(X,categorical(Y+1))
 cv = crossval(model);
