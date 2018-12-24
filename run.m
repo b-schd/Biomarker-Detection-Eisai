@@ -63,13 +63,14 @@ end
         
 
 %% split layer based on channels
-%[~,splitTimes,splitCh] = split_annotations(allEvents, timesUSec, eventChannels);
+splitAnnotationsByChannel(session.data(i),'True_Seizures');
 
 
 %% Train Model
 % for each dataset
 f_X = [];
 f_Y = [];
+szdurations = []
 for i = 1:numel(session.data)
     fprintf('Working on %s\n',session.data(i).snapName);
     feat = [];
@@ -80,6 +81,9 @@ for i = 1:numel(session.data)
     layer = layer_names(ismember(layer_names,'True_Seizures'));
     %if layer exists
     if ~isempty(layer)
+        [~, timesUSec, chs] = getAnnotations(dataset,layerName);
+        tmp = timesUSec(:,2)-timesUSec(:,1);
+        szdurations = [szdurations; tmp/1e6];
         [feat, ch] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,featFn);
     end
     layer = layer_names(ismember(layer_names,'Non_Seizures'));
@@ -104,7 +108,7 @@ for i = 1:numel(session.data)
             %cv = crossval(model);
             %kfoldLoss(cv)
             %% detect for current dataset
-            run_detections(session.data(i),model,winLen,winDisp,ch{1},featFn,strcat(prefix,'-indiv'),layerOption)
+            run_detections(session.data(i),model,winLen,winDisp,szdurations,ch{1},featFn,strcat(prefix,'-indiv'),layerOption)
         end
     else
         fprintf('No Annotations\n');

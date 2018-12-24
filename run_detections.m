@@ -1,5 +1,5 @@
 
-function run_detections(dataset,model,winLen,winDisp,ch,featFn,prefix,layerOption)
+function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,layerOption)
     datasetName = dataset.snapName;
     fs = dataset.sampleRate;
 
@@ -76,8 +76,9 @@ function run_detections(dataset,model,winLen,winDisp,ch,featFn,prefix,layerOptio
         toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
         finalSzIdx = [finalSzIdx; toAdd];
 
-        durations = finalSzIdx(:,2)-finalSzIdx(:,1);
-        finalSzIdx = finalSzIdx(durations>(winLen*fs*2),:);
+        detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
+        %finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
+        finalSzIdx = finalSzIdx(detdurations>(min(durations)*fs),:); %duration threshold min of training durations
         finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
 
         channels = cell(size(finalSzIdx,1),1);
