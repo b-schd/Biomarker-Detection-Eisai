@@ -84,8 +84,8 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
-        finalSzIdx = finalSzIdx(detdurations>(min(durations)*0.95*fs),:); %duration threshold min of training durations
-        fprintf('Duration threshold: %d seconds\n',min(durations)*0.65)
+        finalSzIdx = finalSzIdx(detdurations>(min(durations)*0.7*fs),:); %duration threshold min of training durations
+        fprintf('Duration threshold: %d seconds\n',min(durations)*0.7)
         if size(finalSzIdx,1) > 0
             channels = cell(size(finalSzIdx,1),1);
             for c = 1:numel(channels)
