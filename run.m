@@ -81,7 +81,7 @@ for i = 1:numel(session.data)
     layer = layer_names(ismember(layer_names,'True_Seizures'));
     %if layer exists
     if ~isempty(layer)
-        [~, timesUSec, chs] = getAnnotations(dataset,layer);
+        [~, timesUSec, chs] = getAnnotations(session.data(i),layer);
         tmp = timesUSec(:,2)-timesUSec(:,1);
         szdurations = [szdurations; tmp/1e6];
         [feat, ch] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,featFn);
