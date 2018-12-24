@@ -78,13 +78,19 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
 
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
+        detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(mean(durations)*0.95*fs),:); %duration threshold min of training durations
-        finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
+        
+        if size(finalSzIdx,1) > 0
+            finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
 
-        channels = cell(size(finalSzIdx,1),1);
-        for c = 1:numel(channels)
-            channels{c} = ch;
+            channels = cell(size(finalSzIdx,1),1);
+            for c = 1:numel(channels)
+                channels{c} = ch;
+            end
+            uploadAnnotations(dataset,sprintf('%s_detected_seizures',prefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
+        else
+            fprintf('Detections removed based on duration threshold\n')
         end
-        uploadAnnotations(dataset,sprintf('%s_detected_seizures',prefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
     end
 end
