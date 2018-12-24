@@ -22,13 +22,14 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
     for i = 1:numBlocks
         startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
-        fprintf('Block %d of %d, ch%d_%d idx %d:%d\n',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
+        fprintf('Block %d of %d, ch%d_%d idx %d:%d...',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
         fsave = sprintf('%s-%s,ch%d_%d-idx-%d-%d.mat',dataset.snapName,prefix,ch(1),ch(2),startBlockPt,endBlockPt);
         if ~isempty(dir(fsave))
             fprintf('%s - mat found, loading\n',fsave);
             f = load(fsave);
             feat = f.feat;
         else
+            fprintf('...running'\n')
             data = dataset.getvalues(startBlockPt:endBlockPt,ch);
             feat = runFuncOnWin(data,fs,winLen,winDisp,featFn);
             save(fsave,'feat','-v7.3')
@@ -80,7 +81,7 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
         finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(mean(durations)*0.95*fs),:); %duration threshold min of training durations
-        
+        fprintf('Duration threshold: %d seconds\n',mean(durations)*0.95)
         if size(finalSzIdx,1) > 0
             finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
 
