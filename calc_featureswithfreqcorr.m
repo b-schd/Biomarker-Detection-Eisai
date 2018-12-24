@@ -28,8 +28,6 @@ function feats = calc_featureswithfreqcorr(data, fs)
     %cross correlation
     [acor, lag] = xcorr(data,.25*fs,'coeff');
     lags = lag(acor(:,2)==max(acor(:,2)));
-    LLFn = @(x,fs) nanmean(abs(diff(x)));
-    LL = LLFn(data);
-    feats = [feats max(acor(:,2)) lags(1) r LL];
+    feats = [feats max(acor(:,2)) lags(1) r];
     
 end
