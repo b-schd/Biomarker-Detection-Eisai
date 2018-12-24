@@ -63,7 +63,7 @@ end
         
 
 %% split layer based on channels
-splitAnnotationsByChannel(session.data(i),'True_Seizures');
+%splitAnnotationsByChannel(session.data(i),'True_Seizures');
 
 
 %% Train Model
