@@ -1,11 +1,10 @@
 
-function feats = calc_features(data, fs)
+function feats = calc_tfeatures(data, fs)
 
-%     %power from 1-48hz 
-%     freqRange = 1:48;
-%     P = pmtm(data,[],size(data,1),fs);
-%     feats = log10(abs(P(freqRange,:)))';
-%     feats = reshape(feats, 1,[]);
+AreaFn = @(x) nanmean(abs(x));
+EnergyFn = @(x) nanmean(x.^2);
+ZCFn = @(x) sum((x(1:end-1,:)>repmat(mean(x),size(x,1)-1,1)) & x(2:end,:)<repmat(mean(x),size(x,1)-1,1) | (x(1:end-1,:)<repmat(mean(x),size(x,1)-1,1) & x(2:end,:)>repmat(mean(x),size(x,1)-1,1)));
+LLFn = @
    
     P = pmtm(data,[],size(data,1),fs);
     
