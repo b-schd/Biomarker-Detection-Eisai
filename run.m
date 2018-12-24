@@ -1,5 +1,5 @@
 
-function run(feature,layerOption)
+function run(feature,indivMode,globalMode,layerOption)
 %feature == 'LL' or 'freq'
 %layerOption = 'append' or 'overwrite'
 addpath(genpath('../ieeg-matlab-1.13.2'));
@@ -48,8 +48,8 @@ LLFn = @(x,fs) nanmean(abs(diff(x)));
 
 % PARAMETERS
 %feature='LL';
-indivMode = 0;
-globalMode = 1;
+%indivMode = 1;
+%globalMode = 1;
 winLen = 2;
 winDisp = 1;
 switch feature
