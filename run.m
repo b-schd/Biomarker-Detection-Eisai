@@ -108,7 +108,7 @@ for i = 1:numel(session.data)
             %cv = crossval(model);
             %kfoldLoss(cv)
             %% detect for current dataset
-            run_detections(session.data(i),model,winLen,winDisp,szdurations,ch{1},featFn,strcat(prefix,'-indiv'),layerOption)
+            run_detections(session.data(i),model,winLen,winDisp,szdurations,ch{1},featFn,prefix,'indiv',layerOption)
         end
     else
         fprintf('No Annotations\n');
@@ -128,7 +128,7 @@ for i = 1:numel(session.data)
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
-            run_detections(session.data(i),model,winLen,winDisp,szdurations, ch,featFn,strcat(prefix,'-global'),layerOption)
+            run_detections(session.data(i),model,winLen,winDisp,szdurations, ch,featFn,prefix,'global',layerOption)
         end
     end
 end

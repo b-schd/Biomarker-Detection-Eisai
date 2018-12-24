@@ -1,5 +1,7 @@
 
-function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,layerOption)
+function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,prefix2,layerOption)
+%prefix 1 for feature name, prefix 2 for global/indiv (to reuse .mat
+%feature calculations and to differentiate layers
     datasetName = dataset.snapName;
     fs = dataset.sampleRate;
 
@@ -90,7 +92,7 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
             for c = 1:numel(channels)
                 channels{c} = ch;
             end
-            uploadAnnotations(dataset,sprintf('%s_detected_seizures',prefix),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
+            uploadAnnotations(dataset,sprintf('%s-%s_detected_seizures',prefix,prefix2),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
         else
             fprintf('Detections removed based on duration threshold\n')
         end
