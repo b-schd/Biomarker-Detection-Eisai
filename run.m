@@ -37,7 +37,7 @@ end
 groupChannels = {
     {'EEG EEG1.1A-B','EEG EEG2.1A-B'},  
     {'EEG EEG1.2A-B','EEG EEG2.2A-B'},
-    %{'EEG EEG1.3A-B','EEG EEG2.3A-B','EMG EMG.3'}, %not used
+    {'EEG EEG1.3A-B','EEG EEG2.3A-B'}, %not used
     {'EEG EEG1A-B','EEG EEG2A-B'},
     };
 
