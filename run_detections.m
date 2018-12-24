@@ -77,8 +77,8 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
         finalSzIdx = [finalSzIdx; toAdd];
 
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
-        %finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
-        finalSzIdx = finalSzIdx(detdurations>(min(durations)*fs),:); %duration threshold min of training durations
+        finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
+        finalSzIdx = finalSzIdx(detdurations>(mean(durations)*0.95*fs),:); %duration threshold min of training durations
         finalSzIdx(:,2) = finalSzIdx(:,2) + winLen; %correct for left shift detections
 
         channels = cell(size(finalSzIdx,1),1);

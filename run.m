@@ -70,7 +70,7 @@ end
 % for each dataset
 f_X = [];
 f_Y = [];
-szdurations = []
+szdurations = [];
 for i = 1:numel(session.data)
     fprintf('Working on %s\n',session.data(i).snapName);
     feat = [];
@@ -128,7 +128,7 @@ for i = 1:numel(session.data)
         for j = 1:numel(groupChannels)
             curCh = groupChannels{j};
             ch = find(ismember(channels,curCh));
-            run_detections(session.data(i),model,winLen,winDisp,ch,featFn,strcat(prefix,'-global'),layerOption)
+            run_detections(session.data(i),model,winLen,winDisp,szdurations, ch,featFn,strcat(prefix,'-global'),layerOption)
         end
     end
 end
