@@ -1,5 +1,5 @@
 
-function run(feature,indivMode,globalMode,layerOption)
+function run(feature,model,indivMode,globalMode,layerOption)
 %feature == 'LL' or 'freq'
 %model = 'SVM' or 'RF'
 %layerOption = 'append' or 'overwrite'
@@ -57,7 +57,7 @@ winDisp = 1;
 switch feature
     case 'freq'
         featFn = @calc_featureswithfreqcorr;
-        model= 'RF';
+        mode
         prefix = 'freq';
     case 'kaggle'
         featFn = @calc_featureskaggle;
@@ -119,9 +119,7 @@ for i = 1:numel(session.data)
                     c = [0 50; 1 0];
                     mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
                 case 'RF'
-                    mdl = TreeBagger(1000,X,Y,'OOBPrediction','off');
-                case 'RFkaggle'
-                    mdl = TreeBagger(3000,X,Y,'OOBPrediction','off');
+                    mdl = TreeBagger(1000,X,Y,'OOBPrediction','on');
             end
             %lr = mnrfit(X,categorical(Y+1))
             %cv = crossval(model);
