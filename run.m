@@ -62,7 +62,7 @@ switch feature
     case 'kaggle'
         featFn = @calc_featureskaggle;
         model = 'RFkaggle';
-        prefix = 'freq';
+        prefix = 'kgl';
     case 'LL'
         featFn = LLFn;
         model = 'SVM';
@@ -138,7 +138,9 @@ switch model
         c = [0 50; 1 0];
         mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
     case 'RF'
-        mdl = Treebagger(300,X,Y,'OOBPrediction','on');
+        mdl = Treebagger(1000,X,Y,'OOBPrediction','off');
+    case 'RFkaggle'
+        mdl = TreeBagger(3000,X,Y,'OOBPrediction','off');
 end
 %% detect for current dataset
 for i = 1:numel(session.data)
