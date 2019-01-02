@@ -38,6 +38,9 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
         end
         yhat = predict(model,feat);
         %yhat = cell2mat(yhat);
+        if iscell(yhat)
+            yhat = str2num(cell2mat(yhat));
+        end
         idx = find(yhat==1);
         winIdx = idx*(winLen-(winLen-winDisp)); %now in secs
         tmpIdx = winIdx*fs + startBlockPt - 1;

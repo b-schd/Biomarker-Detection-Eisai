@@ -1,7 +1,9 @@
 
-function run(feature,indivMode,globalMode,layerOption)
+function run(feature,model,indivMode,globalMode,layerOption)
 %feature == 'LL' or 'freq'
+%model = 'SVM' or 'RF'
 %layerOption = 'append' or 'overwrite'
+%default: run('LL','SVM',1,1,'append')
 addpath(genpath('../ieeg-matlab-1.13.2'));
 %addpath('~/gdriveshort/Libraries/Utilities/hline_vline');
 addpath(genpath('../portal-matlab-tools/Analysis'))
@@ -60,7 +62,7 @@ switch feature
         featFn = LLFn;
         prefix = 'LL';
     case 'ts'
-        featFn = @calc_tfeatures
+        featFn = @calc_tfeatures;
         prefix = 'ts';
 end
         
@@ -105,24 +107,30 @@ for i = 1:numel(session.data)
         f_Y = [f_Y;Y];
         
         if indivMode==1
-            c = [0 50; 1 0];
-            model = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
+            switch model
+                case 'SVM'
+                    c = [0 50; 1 0];
+                    mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
+                case 'RF'
+                    mdl = TreeBagger(300,X,Y,'OOBPrediction','on');
+            end
             %lr = mnrfit(X,categorical(Y+1))
             %cv = crossval(model);
             %kfoldLoss(cv)
             %% detect for current dataset
-            run_detections(session.data(i),model,winLen,winDisp,szdurations,ch{1},featFn,prefix,'indiv',layerOption)
+            run_detections(session.data(i),mdl,winLen,winDisp,szdurations,ch{1},featFn,prefix,'indiv',layerOption)
         end
     else
         fprintf('No Annotations\n');
     end
 end
-% model = TreeBagger(100,X,Y);
-c = [0 50; 1 0];
-model = fitcsvm(f_X,f_Y,'KernelFunction','linear','Cost',c);
-%lr = mnrfit(X,categorical(Y+1))
-cv = crossval(model);
-kfoldLoss(cv)
+switch model
+    case 'SVM'
+        c = [0 50; 1 0];
+        mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
+    case 'RF'
+        mdl = Treebagger(300,X,Y,'OOBPrediction','on');
+end
 %% detect for current dataset
 for i = 1:numel(session.data)
     channels = session.data(i).channelLabels(:,1);

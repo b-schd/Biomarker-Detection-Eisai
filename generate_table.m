@@ -37,4 +37,4 @@ for i = 1:numel(session.data)
 end
 T = cell2table(collate);
 T.Properties.VariableNames = {'Group' 'Channel' 'Layer' 'Start' 'End' 'Duration'};
-writetable(T,'table.csv')
+writetable(T,'sz.csv')
