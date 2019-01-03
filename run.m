@@ -1,5 +1,5 @@
 
-function run(feature,indivMode,globalMode,layerOption)
+function run(feature,prefix,indivMode,globalMode,layerOption)
 %feature == 'LL' or 'freq'
 %model = 'SVM' or 'RF'
 %layerOption = 'append' or 'overwrite'
@@ -58,25 +58,22 @@ switch feature
     case 'freq'
         featFn = @calc_featureswithfreqcorr;
         model= 'RF';
-        prefix = 'freq';
     case 'kaggle'
         featFn = @calc_featureskaggle;
         model = 'RFkaggle';
-        prefix = 'kgl';
     case 'LL'
         featFn = LLFn;
         model = 'SVM';
-        prefix = 'LL';
     case 'ts'
         featFn = @calc_tfeatures;
         model = 'SVM';
-        prefix = 'ts';
 end
         
 
 %% split layer based on channels
-%splitAnnotationsByChannel(session.data(i),'True_Seizures');
-
+%for i = 1:numel(session.data)
+%    splitAnnotationsByChannel(session.data(i),'True_Seizures');
+%end
 
 %% Train Model
 % for each dataset
@@ -136,11 +133,11 @@ end
 switch model
     case 'SVM'
         c = [0 50; 1 0];
-        mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
+        mdl = fitcsvm(f_X,f_Y,'KernelFunction','linear','Cost',c);
     case 'RF'
-        mdl = Treebagger(1000,X,Y,'OOBPrediction','off');
+        mdl = Treebagger(1000,f_X,f_Y,'OOBPrediction','off');
     case 'RFkaggle'
-        mdl = TreeBagger(3000,X,Y,'OOBPrediction','off');
+        mdl = TreeBagger(3000,f_X,f_Y,'OOBPrediction','off');
 end
 %% detect for current dataset
 for i = 1:numel(session.data)
