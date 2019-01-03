@@ -1,5 +1,5 @@
 
-function run(feature,prefix,indivMode,globalMode,layerOption)
+function run(feature,indivMode,globalMode,layerOption)
 %feature == 'LL' or 'freq'
 %model = 'SVM' or 'RF'
 %layerOption = 'append' or 'overwrite'
@@ -58,15 +58,19 @@ switch feature
     case 'freq'
         featFn = @calc_featureswithfreqcorr;
         model= 'RF';
+        prefix = 'freq';
     case 'kaggle'
         featFn = @calc_featureskaggle;
         model = 'RFkaggle';
+        prefix = 'kgl';
     case 'LL'
         featFn = LLFn;
         model = 'SVM';
+        prefix = 'LL';
     case 'ts'
         featFn = @calc_tfeatures;
         model = 'SVM';
+        prefix = 'ts';
 end
         
 
