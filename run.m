@@ -122,7 +122,7 @@ for i = 1:numel(session.data)
                 case 'RF'
                     mdl = TreeBagger(1000,X,Y,'OOBPrediction','off');
                 case 'RFkaggle'
-                    mdl = TreeBagger(3000,X,Y,'OOBPrediction','off');
+                    mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'SampleWithReplacement','off','OOBPrediction','off');
             end
             %lr = mnrfit(X,categorical(Y+1))
             %cv = crossval(model);
