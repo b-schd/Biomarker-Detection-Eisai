@@ -57,19 +57,19 @@ winDisp = 1;
 switch feature
     case 'freq'
         featFn = @calc_featureswithfreqcorr;
-        %model= 'RF';
+        model= 'RF';
         prefix = 'freq';
     case 'kaggle'
         featFn = @calc_featureskaggle;
-        %model = 'RFkaggle';
+        model = 'RFkaggle';
         prefix = 'kgl';
     case 'LL'
         featFn = LLFn;
-        %model = 'SVM';
+        model = 'SVM';
         prefix = 'LL';
     case 'ts'
         featFn = @calc_tfeatures;
-        %model = 'SVM';
+        model = 'SVM';
         prefix = 'ts';
 end
         

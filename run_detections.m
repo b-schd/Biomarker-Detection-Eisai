@@ -87,14 +87,17 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
-        finalSzIdx = finalSzIdx(detdurations>(min(durations)*0.5*fs),:); %duration threshold min of training durations
+        duration_threshold = 2;
+        finalSzIdx = finalSzIdx(detdurations>(duration_threshold*fs),:); %duration threshold min of training durations
         fprintf('Duration threshold: %d seconds\n',min(durations)*0.5)
+        %finalSzIdx = finalSzIdx(detdurations>(min(durations)*0.5*fs),:); %duration threshold min of training durations
+        %fprintf('Duration threshold: %d seconds\n',min(durations)*0.5)
         if size(finalSzIdx,1) > 0
             channels = cell(size(finalSzIdx,1),1);
             for c = 1:numel(channels)
                 channels{c} = ch;
             end
-            uploadAnnotations(dataset,sprintf('%s-%s_detected_seizures',prefix,prefix2),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
+            uploadAnnotations(dataset,sprintf('%s-%s_bursts',prefix,prefix2),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
         else
             fprintf('Detections removed based on duration threshold\n')
         end
