@@ -4,7 +4,7 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
 %feature calculations and to differentiate layers
     datasetName = dataset.snapName;
     fs = dataset.sampleRate;
-
+    base_path = 'tmp/'
     startTime = 1; % in seconds
     stopTime = dataset.rawChannels(1).get_tsdetails.getDuration/1e6;
     
@@ -25,7 +25,7 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
         startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
         fprintf('Block %d of %d, ch%d_%d idx %d:%d...',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
-        fsave = sprintf('%s-%s,ch%d_%d-idx-%d-%d.mat',dataset.snapName,prefix,ch(1),ch(2),startBlockPt,endBlockPt);
+        fsave = sprintf('%s%s-%s,ch%d_%d-idx-%d-%d.mat',base_path,dataset.snapName,prefix,ch(1),ch(2),startBlockPt,endBlockPt);
         if ~isempty(dir(fsave))
             fprintf('%s - mat found, loading\n',fsave);
             f = load(fsave);
