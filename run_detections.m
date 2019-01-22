@@ -1,5 +1,5 @@
 
-function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,prefix2,layerOption)
+function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featFn,layer_prefix,prefix,prefix2,layerOption)
 %prefix 1 for feature name, prefix 2 for global/indiv (to reuse .mat
 %feature calculations and to differentiate layers
     datasetName = dataset.snapName;
@@ -87,17 +87,14 @@ function run_detections(dataset,model,winLen,winDisp,durations,ch,featFn,prefix,
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
         finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
-        duration_threshold = 2;
         finalSzIdx = finalSzIdx(detdurations>(duration_threshold*fs),:); %duration threshold min of training durations
-        fprintf('Duration threshold: %d seconds\n',min(durations)*0.5)
-        %finalSzIdx = finalSzIdx(detdurations>(min(durations)*0.5*fs),:); %duration threshold min of training durations
-        %fprintf('Duration threshold: %d seconds\n',min(durations)*0.5)
+        fprintf('Duration threshold: %d seconds\n',duration_threshold)
         if size(finalSzIdx,1) > 0
             channels = cell(size(finalSzIdx,1),1);
             for c = 1:numel(channels)
                 channels{c} = ch;
             end
-            uploadAnnotations(dataset,sprintf('%s-%s_bursts',prefix,prefix2),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
+            uploadAnnotations(dataset,sprintf('%s-%s-%s_bursts',layer_prefix,prefix,prefix2),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
         else
             fprintf('Detections removed based on duration threshold\n')
         end

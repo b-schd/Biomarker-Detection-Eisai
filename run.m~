@@ -1,10 +1,5 @@
 
-function run(feature,model,layer_prefix, durationThreshold, indivMode,globalMode,layerOption)
-%
-% Usage: run(feature,model,layer_prefix, durationThreshold, indivMode,globalMode,layerOption)
-% durationThreshold : int in seconds or 'min0.5' to set automatically
-% to half of annotated detections., default is 'min0.5'
-
+function run(feature,model,layer_prefix, indivMode,globalMode,layerOption)
 %feature == 'LL' or 'freq'
 %model = 'SVM' or 'RF'
 %layerOption = 'append' or 'overwrite'
@@ -57,6 +52,7 @@ LLFn = @(x,fs) nanmean(abs(diff(x)));
 %feature='LL';
 %indivMode = 1;
 %globalMode = 1;
+durationThreshold = 2; %set to 'min0.5' to set automatically to half of annotated detections.
 winLen = 2;
 winDisp = 1;
 switch feature
@@ -93,7 +89,6 @@ for i = 1:numel(session.data)
     fprintf('Working on %s\n',session.data(i).snapName);
     feat = [];
     feat2 = [];
-    tmpszdurations = [];
     fs = session.data(i).sampleRate;
     channels = session.data(i).channelLabels(:,1);
     layer_names = {session.data(i).annLayer.name};
@@ -102,7 +97,7 @@ for i = 1:numel(session.data)
     if ~isempty(layer)
         [~, timesUSec, chs] = getAnnotations(session.data(i),layer);
         tmp = timesUSec(:,2)-timesUSec(:,1);
-        tmpszdurations = [tmpszdurations; tmp/1e6];
+        szdurations = [szdurations; tmp/1e6];
         [feat, ch] = extractFeaturesFromAnnotationLayer(session.data(i),layer{1},winLen,winDisp,fs,featFn);
     end
     layer = layer_names(ismember(layer_names,'Non_Seizures'));
@@ -135,14 +130,13 @@ for i = 1:numel(session.data)
             %kfoldLoss(cv)
             %% detect for current dataset
             if strcmp(durationThreshold,'min0.5') || isempty(durationThreshold)
-                durationThreshold = min(tmpszdurations)*0.5;
+                durationThreshold = min(szdurations)*0.5;
             end
             run_detections(session.data(i),mdl,winLen,winDisp,durationThreshold,ch{1},featFn,layer_prefix,feature_prefix,'indiv',layerOption)
         end
     else
         fprintf('No Annotations\n');
     end
-    szdurations = [szdurations; tmpszdurations];
 end
 switch model
     case 'SVM'
