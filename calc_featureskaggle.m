@@ -1,5 +1,5 @@
 
-function feats = calc_featureskaggle2(data, fs)
+function feats = calc_featureskaggle(data,varargin)
 %data should be NxC, where rows are samples and columns are channels
 
 %     %power from 1-48hz 
@@ -12,15 +12,17 @@ function feats = calc_featureskaggle2(data, fs)
     data2 = FreqCorrelation(data);
    
 
-    feats = [data1;data2];
+    feats = [data1;data2]';
     
 end
 
 function out = TimeCorrelation(data)
-    %correlation between channels
-    data2 = (data - mean(data))./std(data,1,1);
+    %correlation between channels, normalize if > 2 channels
+    if size(data,2) > 2
+        data = (data - mean(data,2))./std(data,1,2);
+    end
     %center to mean and scale by unit variance
-    r2 = corr(data2');
+    r2 = corr(data);
     e2 = abs(eig(r2));
     ref = r2*0+1;
     t = triu(r2,1);
@@ -40,8 +42,11 @@ function out = FreqCorrelation(data)
     %2 channels, where he described normalizing across channels would
     %result in correlation of 1 due to only 2 channels. I believe his
     %documentation is incorrect
-    data2 = (P2 - mean(P2,2))./std(P2,1,2);
-    r2 = corr(data2');
+    P3 = P2;
+    if size(P3,2)>2
+        P3 = (P3 - mean(P3,2))./std(P3,1,2);
+    end
+    r2 = corr(P3);
     e2 = abs(eig(r2));
     ref = r2*0+1;
     t = triu(r2,1);

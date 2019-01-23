@@ -26,8 +26,10 @@ for i = 1:numWindows
         if maxLength == 0
             maxLength = numel(out{i});
         end
-    catch
+    catch e
         fprintf('Unable to calculate for window %d\n',i);
+        fprintf(1,'Identifier:\n%s',e.identifier);
+        fprintf(1,'Error! The message was:\n%s',e.message);
         out{i} = NaN;
         nanFlag = 1;
     end
