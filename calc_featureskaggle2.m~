@@ -12,7 +12,7 @@ function feats = calc_featureskaggle2(data, fs)
     data2 = FreqCorrelation(data);
    
 
-    feats = [data1;data2];
+    feats = [feats e' r e2' r];
     
 end
 
@@ -48,8 +48,8 @@ function out = FreqCorrelation(data)
     ref = triu(ref,1);
     t = t(ref==1);
     
-    P2 = reshape(P2,[],1);
-    out = [P2;e2;t];
+    P2 = reshape(
+    out = [e2;t];
 end
 function rfft = rfft(a)
      ffta = fft(a);
