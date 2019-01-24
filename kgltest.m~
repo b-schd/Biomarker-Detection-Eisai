@@ -1,3 +1,0 @@
-data = csvread('testszdata.csv');
-truefeat = csvread('testszkglfeat.csv');
-fs = 400

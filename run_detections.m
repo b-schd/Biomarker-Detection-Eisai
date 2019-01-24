@@ -1,10 +1,12 @@
 
-function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featFn,layer_prefix,prefix,prefix2,layerOption)
+function run_detections(dataset,model,winLen,winDisp,durationThreshold,minThreshold,mergeThreshold,ch,featFn,layer_prefix,prefix,prefix2,layerOption)
 %prefix 1 for feature name, prefix 2 for global/indiv (to reuse .mat
 %feature calculations and to differentiate layers
+
+    
     datasetName = dataset.snapName;
     fs = dataset.sampleRate;
-    base_path = 'tmp/'
+    base_path = 'tmp/';
     startTime = 1; % in seconds
     stopTime = dataset.rawChannels(1).get_tsdetails.getDuration/1e6;
     
@@ -21,6 +23,7 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
     numBlocks = ceil((stopTime-startTime)/blockLenSecs);
     startIdx = 1;
     szIdx = [];
+    
     for i = 1:numBlocks
         startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
@@ -62,7 +65,7 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
         szIdxRange = [szIdx szIdx+winLen*fs]; %set duration
         %uploadAnnotations(dataset,sprintf('%s_detected_clips',prefix),szIdxRange/fs*1e6,channels,'SZ',layerOption)
 
-        %combine detections less than 1 winLen apart
+        %combine detections less than 1 second apart
         szIdx = sort(szIdx);
         dsz = diff(szIdx);
         finalSzIdx = [];
@@ -70,7 +73,7 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
         sidx = 1;
         eidx = 1;
         for i = 1:numel(dsz)
-            if dsz(i) > (winLen)*fs
+            if dsz(i) > mergeThreshold*fs
                 toAdd = [tmpIdx(sidx),tmpIdx(eidx)];
                 finalSzIdx = [finalSzIdx; toAdd];
                 sidx = eidx + 1;
@@ -85,10 +88,10 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
         finalSzIdx(:,2) = finalSzIdx(:,2) + winLen*fs; %correct for left shift detections
 
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
-        finalSzIdx = finalSzIdx(detdurations>(winLen*fs*2),:); %duration threshold >2xwinLen
+        finalSzIdx = finalSzIdx(detdurations>minThreshold * fs,:); %min threshold
         detdurations = finalSzIdx(:,2)-finalSzIdx(:,1);
-        finalSzIdx = finalSzIdx(detdurations>(duration_threshold*fs),:); %duration threshold min of training durations
-        fprintf('Duration threshold: %d seconds\n',duration_threshold)
+        finalSzIdx = finalSzIdx(detdurations>(durationThreshold*fs),:); %duration threshold min of training durations
+        fprintf('Duration threshold: %d seconds\n',durationThreshold)
         if size(finalSzIdx,1) > 0
             channels = cell(size(finalSzIdx,1),1);
             for c = 1:numel(channels)
@@ -96,7 +99,7 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
             end
             uploadAnnotations(dataset,sprintf('%s-%s-%s_detected',layer_prefix,prefix,prefix2),finalSzIdx/fs*1e6,channels,'SZ',layerOption)
         else
-            fprintf('Detections removed based on duration threshold\n')
+            fprintf('Detections removed based on thresholds\n')
         end
     end
 end

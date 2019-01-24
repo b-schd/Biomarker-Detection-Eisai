@@ -59,6 +59,8 @@ LLFn = @(x,fs) nanmean(abs(diff(x)));
 %globalMode = 1;
 winLen = 2;
 winDisp = 1;
+mergeThreshold = winLen; %in seconds was 2*winLen
+minThreshold = winLen;
 switch feature
     case 'freq'
         featFn = @calc_featureswithfreqcorr;
@@ -141,7 +143,7 @@ for i = 1:numel(session.data)
             if strcmp(durationThreshold,'min0.5') || isempty(durationThreshold)
                 durationThreshold = min(tmpszdurations)*0.5;
             end
-            run_detections(session.data(i),mdl,winLen,winDisp,durationThreshold,ch{1},featFn,layer_prefix,feature_prefix,'indiv',layerOption)
+            run_detections(session.data(i),mdl,winLen,winDisp,durationThreshold,minThreshold,mergeThreshold,ch{1},featFn,layer_prefix,feature_prefix,'indiv',layerOption)
         end
     else
         fprintf('No Annotations\n');
@@ -172,7 +174,7 @@ for i = 1:numel(session.data)
                 if strcmp(durationThreshold,'min0.5') || isempty(durationThreshold)
                     durationThreshold = min(szdurations)*0.5;
                 end
-                run_detections(session.data(i),mdl,winLen,winDisp,durationThreshold, ch,featFn,layer_prefix,feature_prefix,'global',layerOption)
+                run_detections(session.data(i),mdl,winLen,winDisp,durationThreshold, minThreshold,mergeThreshold,ch,featFn,layer_prefix,feature_prefix,'global',layerOption)
             end
         end
     end
