@@ -55,10 +55,10 @@ function run_detections(dataset,model,winLen,winDisp,duration_threshold,ch,featF
 %     y = cell2mat(Yhat);
     
     if numel(szIdx)>0
-        channels = cell(size(szIdx,1),1);
-        for c = 1:numel(channels)
-            channels{c} = ch;
-        end
+%         channels = cell(size(szIdx,1),1);
+%         for c = 1:numel(channels)
+%             channels{c} = ch;
+%         end
         szIdxRange = [szIdx szIdx+winLen*fs]; %set duration
         %uploadAnnotations(dataset,sprintf('%s_detected_clips',prefix),szIdxRange/fs*1e6,channels,'SZ',layerOption)
 

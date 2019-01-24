@@ -123,12 +123,16 @@ for i = 1:numel(session.data)
         if indivMode==1
             switch model
                 case 'SVM'
-                    c = [0 50; 1 0];
-                    mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',c);
+                    C = [0 50; 1 0];
+                    mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',C);
                 case 'RF'
                     mdl = TreeBagger(1000,X,Y,'OOBPrediction','off');
                 case 'RFkaggle'
-                    mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'SampleWithReplacement','off','OOBPrediction','off');
+                    C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
+                    % n_samples / (n_classes * np.bincount(y))
+                    mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'Cost',C,'SampleWithReplacement','on','OOBPrediction','on');
+                    %kaggle solution below
+                    %mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'SampleWithReplacement','off','OOBPrediction','off');
             end
             %lr = mnrfit(X,categorical(Y+1))
             %cv = crossval(model);
@@ -151,7 +155,10 @@ switch model
     case 'RF'
         mdl = Treebagger(1000,f_X,f_Y,'OOBPrediction','off');
     case 'RFkaggle'
-        mdl = TreeBagger(3000,f_X,f_Y,'OOBPrediction','off');
+        C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
+        % n_samples / (n_classes * np.bincount(y))
+        mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'Cost',C,'SampleWithReplacement','on','OOBPrediction','on');
+        %mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'SampleWithReplacement','off','OOBPrediction','off');
 end
 %% detect for current dataset
 for i = 1:numel(session.data)
@@ -159,8 +166,8 @@ for i = 1:numel(session.data)
     %run through each mouse combination
     if globalMode==1
         for j = 1:numel(groupChannels)
-            curCh = groupChannels{j};
-            ch = find(ismember(channels,curCh));
+            curCh = groupChannels{j}; %get channels for each mouse
+            ch = find(ismember(channels,curCh))'; %find channel numbers
             if ~isempty(ch)
                 if strcmp(durationThreshold,'min0.5') || isempty(durationThreshold)
                     durationThreshold = min(szdurations)*0.5;
