@@ -64,19 +64,19 @@ minThreshold = winLen;
 switch feature
     case 'freq'
         featFn = @calc_featureswithfreqcorr;
-       % model= 'RF';
+        model= 'RF';
         feature_prefix = 'freq';
     case 'kaggle'
         featFn = @calc_featureskaggle;
-        %model = 'RFkaggle';
+        model = 'RFkaggle';
         feature_prefix = 'kgl';
     case 'LL'
         featFn = LLFn;
-        %model = 'SVM';
+        model = 'SVM';
         feature_prefix = 'LL';
     case 'ts'
         featFn = @calc_tfeatures;
-        %model = 'SVM';
+        model = 'SVM';
         feature_prefix = 'ts';
 end
         
@@ -132,10 +132,10 @@ for i = 1:numel(session.data)
                 case 'RFkaggle'
                     C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
                     % n_samples / (n_classes * np.bincount(y))
-                    %C = [0 1; 100 0]
+                    C = [0 1; 100 0]
                     mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'Cost',C,'SampleWithReplacement','on','OOBPrediction','on');
                     %kaggle solution below
-                    %mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'SampleWithReplacement','off','OOBPrediction','off');
+                    mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'SampleWithReplacement','off','OOBPrediction','off');
             end
             %lr = mnrfit(X,categorical(Y+1))
             %cv = crossval(model);
