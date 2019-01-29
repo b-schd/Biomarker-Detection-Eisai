@@ -3,7 +3,7 @@ function run_detections_simple(dataset,winLen,winDisp,durationThreshold,minThres
 %prefix 1 for feature name, prefix 2 for global/indiv (to reuse .mat
 %feature calculations and to differentiate layers
     bg_win = 180;
-    std_thres = 5;
+    std_thres = 7;
     datasetName = dataset.snapName;
     fs = dataset.sampleRate;
     base_path = 'tmp/';
