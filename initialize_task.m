@@ -14,6 +14,7 @@ params.datasetID = {
    'Jensen_Eisai_groupH',
    'Jensen_Eisai_groupI',
    'Jensen_Eisai_groupJ',
+   'Jensen_Eisai_groupK',
     };
 
 params.groupChannels = {
