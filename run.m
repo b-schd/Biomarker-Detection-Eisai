@@ -162,7 +162,7 @@ switch model
     case 'RFkaggle'
         % C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
         % n_samples / (n_classes * np.bincount(y))
-        C = [1 10; 1 0];
+        C = [0 10; 1 0];
         mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'Cost',C,'SampleWithReplacement','on','OOBPrediction','on');
         [yhat,scores,stdevs] = oobPredict(mdl);
         cv = mean(str2num(cell2mat(yhat))==Y);
