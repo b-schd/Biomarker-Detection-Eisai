@@ -25,29 +25,33 @@ function run_detections(dataset,model,winLen,winDisp,durationThreshold,minThresh
     szIdx = [];
     
     for i = 1:numBlocks
-        startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
-        endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
-        fprintf('Block %d of %d, ch%d_%d idx %d:%d...',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
-        fsave = sprintf('%s%s-%s,ch%d_%d-idx-%d-%d.mat',base_path,dataset.snapName,prefix,ch(1),ch(2),startBlockPt,endBlockPt);
-        if ~isempty(dir(fsave))
-            fprintf('%s - mat found, loading\n',fsave);
-            f = load(fsave);
-            feat = f.feat;
-        else
-            fprintf('...running\n')
-            data = dataset.getvalues(startBlockPt:endBlockPt,ch);
-            feat = runFuncOnWin(data,fs,winLen,winDisp,featFn);
-            save(fsave,'feat','-v7.3')
-        end
-        yhat = predict(model,feat);
-        %yhat = cell2mat(yhat);
-        if iscell(yhat)
-            yhat = str2num(cell2mat(yhat));
-        end
-        idx = find(yhat==1);
-        winIdx = idx*(winLen-(winLen-winDisp)); %now in secs
-        tmpIdx = winIdx*fs + startBlockPt - 1;
-        szIdx = [szIdx; tmpIdx];
+	try
+        	startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
+        	endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
+        	fprintf('Block %d of %d, ch%d_%d idx %d:%d...',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
+        	fsave = sprintf('%s%s-%s,ch%d_%d-idx-%d-%d.mat',base_path,dataset.snapName,prefix,ch(1),ch(2),startBlockPt,endBlockPt);
+        	if ~isempty(dir(fsave))
+            		fprintf('%s - mat found, loading\n',fsave);
+            		f = load(fsave);
+            		feat = f.feat;
+        	else
+            		fprintf('...running\n')
+            		data = dataset.getvalues(startBlockPt:endBlockPt,ch);
+            		feat = runFuncOnWin(data,fs,winLen,winDisp,featFn);
+            		save(fsave,'feat','-v7.3')
+        	end
+        	yhat = predict(model,feat);
+        	%yhat = cell2mat(yhat);
+        	if iscell(yhat)
+            	yhat = str2num(cell2mat(yhat));
+        	end
+        	idx = find(yhat==1);
+        	winIdx = idx*(winLen-(winLen-winDisp)); %now in secs
+        	tmpIdx = winIdx*fs + startBlockPt - 1;
+        	szIdx = [szIdx; tmpIdx];
+	catch
+		fprintf('error with block');
+	end
     end
 %     %% detect
 %     fn = dir(outPrefix);

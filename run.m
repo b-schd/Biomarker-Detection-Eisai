@@ -1,5 +1,5 @@
 
-function run(feature,model,layer_prefix, durationThreshold, indivMode,globalMode,layerOption)
+function run(feature,model,layer_prefix, inputC, durationThreshold, indivMode,globalMode,layerOption)
 %
 % Usage: run(feature,model,layer_prefix, durationThreshold, indivMode,globalMode,layerOption)
 % durationThreshold : int in seconds or 'min0.5' to set automatically
@@ -132,7 +132,7 @@ for i = 1:numel(session.data) % for al
                 case 'RFkaggle'
                     % C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
                     % n_samples / (n_classes * np.bincount(y))
-                    C = [0 10; 1 0];
+                    C = [0 inputC; 1 0];
                     mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'Cost',C,'SampleWithReplacement','on','OOBPrediction','on');
                     [yhat,scores,stdevs] = oobPredict(mdl);
                     cv = mean(str2num(cell2mat(yhat))==Y)
@@ -162,7 +162,7 @@ switch model
     case 'RFkaggle'
         % C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
         % n_samples / (n_classes * np.bincount(y))
-        C = [0 10; 1 0];
+        C = [0 inputC; 1 0];
         mdl = TreeBagger(3000,X,Y,'MinLeafSize',2,'Cost',C,'SampleWithReplacement','on','OOBPrediction','on');
         [yhat,scores,stdevs] = oobPredict(mdl);
         cv = mean(str2num(cell2mat(yhat))==Y);
