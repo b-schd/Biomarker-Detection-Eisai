@@ -1,19 +1,19 @@
 
-function run(feature,model,layer_prefix, inputC, durationThreshold, indivMode,globalMode,layerOption)
+function run_pipeline(feature,model,layer_prefix, inputC, durationThreshold, indivMode,globalMode,layerOption)
 %
-% Usage: run(feature,model,layer_prefix, durationThreshold, indivMode,globalMode,layerOption)
+% Usage: run_pipeline(feature,model,layer_prefix, durationThreshold, indivMode,globalMode,layerOption)
 % durationThreshold : int in seconds or 'min0.5' to set automatically
 % to half of annotated detections., default is 'min0.5'
+% feature == 'LL' or 'freq'
+% model = 'SVM' or 'RF'
+% layerOption = 'append' or 'overwrite'
+% default: run_pipeline('LL','SVM','test',5,1,1,'append')
+% Seizure detection
+% run_pipeline('kaggle','RFKaggle','test',25,5,1,1,'append')
 
-%feature == 'LL' or 'freq'
-%model = 'SVM' or 'RF'
-%layerOption = 'append' or 'overwrite'
-%default: run('LL','SVM',1,1,'append')
 addpath(genpath('../ieeg-matlab-1.13.2'));
-%addpath('~/gdriveshort/Libraries/Utilities/hline_vline');
 addpath(genpath('../portal-matlab-tools/Analysis'))
 addpath(genpath('../portal-matlab-tools/Utilities'))
-%javaaddpath('Z:\public\USERS\hoameng/Libraries/ieeg-matlab-1.13.2/IEEGToolbox/lib/ieeg-matlab.jar');
 
 params = initialize_task;
 
@@ -34,19 +34,7 @@ for i = 1:numel(session.data)
     channelIdxs{i} = [1 3];
 end
 
-% groupChannels = {
-%     {'EEG EEG1.1A-B','EEG EEG2.1A-B','EMG EMG.1'},  
-%     {'EEG EEG1.2A-B','EEG EEG2.2A-B','EMG EMG.2'},
-%     %{'EEG EEG1.3A-B','EEG EEG2.3A-B','EMG EMG.3'}, %not used
-%     {'EEG EEG1A-B','EEG EEG2A-B','EMG EMG'},
-%     };
 
-groupChannels = {
-    {'EEG EEG1.1A-B','EEG EEG2.1A-B'},  
-    {'EEG EEG1.2A-B','EEG EEG2.2A-B'},
-    {'EEG EEG1.3A-B','EEG EEG2.3A-B'}, %not used
-    {'EEG EEG1A-B','EEG EEG2A-B'},
-    };
 
 %anonymous functions
 %EnergyFn = @(x) mean(x.^2);
@@ -68,7 +56,7 @@ switch feature
         feature_prefix = 'freq';
     case 'kaggle'
         featFn = @calc_featureskaggle;
-        %model = 'RFkaggle';
+        %model = 'RFKaggle';
         feature_prefix = 'kgl';
     case 'LL'
         featFn = LLFn;
@@ -129,7 +117,7 @@ for i = 1:numel(session.data) % for al
                     mdl = fitcsvm(X,Y,'KernelFunction','linear','Cost',C);
                 case 'RF'
                     mdl = TreeBagger(1000,X,Y,'OOBPrediction','off');
-                case 'RFkaggle'
+                case 'RFKaggle'
                     % C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
                     % n_samples / (n_classes * np.bincount(y))
                     C = [0 inputC; 1 0];
@@ -159,7 +147,7 @@ switch model
         mdl = fitcsvm(f_X,f_Y,'KernelFunction','linear','Cost',c);
     case 'RF'
         mdl = Treebagger(1000,f_X,f_Y,'OOBPrediction','off');
-    case 'RFkaggle'
+    case 'RFKaggle'
         % C = [0 numel(Y)/(numel(unique(Y))*sum(Y==1)); numel(Y)/(numel(unique(Y))*sum(Y==0)) 0];
         % n_samples / (n_classes * np.bincount(y))
         C = [0 inputC; 1 0];
@@ -173,8 +161,8 @@ for i = 1:numel(session.data)
     channels = session.data(i).channelLabels(:,1);
     %run through each mouse combination
     if globalMode==1
-        for j = 1:numel(groupChannels)
-            curCh = groupChannels{j}; %get channels for each mouse
+        for j = 1:numel(params.groupChannels)
+            curCh = params.groupChannels{j}; %get channels for each mouse
             ch = find(ismember(channels,curCh))'; %find channel numbers
             if ~isempty(ch)
                 if strcmp(durationThreshold,'min0.5') || isempty(durationThreshold)
