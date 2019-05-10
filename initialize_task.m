@@ -34,7 +34,7 @@ params.groupChannels = {
     };
 
 
-params.IEEGid = 'hoameng';
-params.IEEGpwd = 'hoa_ieeglogin.bin';
+params.IEEGid = 'ItoYo';
+params.IEEGpwd = 'Ito_ieeglogin.bin';
 params.spike_layer = '';
 params.marked_seizure_layer = 'True_Seizures';

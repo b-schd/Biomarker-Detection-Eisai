@@ -11,7 +11,7 @@ function run_pipeline(feature,model,layer_prefix, inputC, durationThreshold, ind
 % Seizure detection
 % run_pipeline('kaggle','RFKaggle','test',25,5,1,1,'append')
 
-addpath(genpath('../ieeg-matlab-1.13.2'));
+addpath(genpath('../ieeg-matlab-1.14.49'));
 addpath(genpath('../portal-matlab-tools/Analysis'))
 addpath(genpath('../portal-matlab-tools/Utilities'))
 
