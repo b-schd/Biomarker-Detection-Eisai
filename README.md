@@ -18,12 +18,12 @@ Ensure that all packages/repos above are in one directory along with extracted m
 ## Run:
 Note, these scripts were tailored for a specific project in mind. To do: generalize
 1. Edit initialize_task.m to include relevant parameters, datasets, grouped channels, as well as 
-2. run_main - run a "large seizure" detector
-a. open ssh client (putty/cygwin/terminal)
-b. type: ssh username@borel.seas.upenn.edu, enter your password
-c. navigate to your Eisai folder 
-d. matlab -nodisplay
-e. run_main
+2. run_main - run a "large seizure" detector  
+a. open ssh client (putty/cygwin/terminal)  
+b. type: ssh username@borel.seas.upenn.edu, enter your password  
+c. navigate to your Eisai folder   
+d. matlab -nodisplay    
+e. run_pipeline('kaggle','RFKaggle','test',25,5,1,1,'append')  
 
 tips: google "linux screen" 
 
