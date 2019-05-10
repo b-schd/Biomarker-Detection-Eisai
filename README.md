@@ -23,7 +23,7 @@ a. open ssh client (putty/cygwin/terminal)
 b. type: ssh username@borel.seas.upenn.edu, enter your password  
 c. navigate to your Eisai folder   
 d. matlab -nodisplay    
-e. run_pipeline('kaggle','RFKaggle','test',25,5,1,1,'append')  
+e. run_pipeline('kaggle','RFKaggle','test',25,12,1,1,'append')  
 
 tips: google "linux screen" 
 
