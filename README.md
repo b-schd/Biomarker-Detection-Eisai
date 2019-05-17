@@ -15,7 +15,10 @@ Ensure that all packages/repos above are in one directory along with extracted m
 3. Download ieeg-matlab toolbxo from link above
 4. Setup ieeg-matlab toolbox. (see portal-matlab-tools/IEEGTutorial.m). Once you set up your account, the login.bin needs to be in the matlab path. It may be easiest to place it in the ieeg-matlab folder.
 
-## Run:
+## Run locally on matlab  
+1. run_pipeline('kaggle','RFKaggle','test',25,12,1,1,'append')  
+
+## Run on linux:
 Note, these scripts were tailored for a specific project in mind. To do: generalize
 1. Edit initialize_task.m to include relevant parameters, datasets, grouped channels, as well as 
 2. run_main - run a "large seizure" detector  
@@ -27,6 +30,11 @@ e. run_pipeline('kaggle','RFKaggle','test',25,12,1,1,'append')
 
 tips: google "linux screen" 
 
-removeAnnotations from portal-matlab-tools may be useful in removing layers that have been added.
+# Misc tips
+1. removeAnnotations from portal-matlab-tools may be useful in removing layers that have been added.  
+2. To calculate duration of seizures, 
+a. session = IEEGSession('[dataset]','username','password')
+b. annotations = getAnnotations(IEEGDataset object, 'layer name')
+c. ([annotations.end] - [annotations.start])/1e6 %durations of all annotations in seconds (note that these durations are expected to be shorter than the duration of the actual seizures)
 
 
