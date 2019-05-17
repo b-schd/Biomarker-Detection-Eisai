@@ -32,9 +32,9 @@ tips: google "linux screen"
 
 # Misc tips
 1. removeAnnotations from portal-matlab-tools may be useful in removing layers that have been added.  
-2. To calculate duration of seizures, 
-a. session = IEEGSession('[dataset]','username','password')
-b. annotations = getAnnotations(IEEGDataset object, 'layer name')
-c. ([annotations.end] - [annotations.start])/1e6 %durations of all annotations in seconds (note that these durations are expected to be shorter than the duration of the actual seizures)
+2. To calculate duration of seizures,  
+a. session = IEEGSession('[dataset]','username','password')  
+b. annotations = getAnnotations(IEEGDataset object, 'layer name')  
+c. ([annotations.end] - [annotations.start])/1e6 %durations of all annotations in seconds (note that these durations are expected to be shorter than the duration of the actual seizures)  
 
 
