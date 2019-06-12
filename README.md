@@ -16,13 +16,14 @@ Ensure that all packages/repos above are in one directory along with extracted m
 4. Setup ieeg-matlab toolbox. (see portal-matlab-tools/IEEGTutorial.m). Once you set up your account, the login.bin needs to be in the matlab path. It may be easiest to place it in the ieeg-matlab folder.
 
 ## Run locally on matlab  
-The function below uses relative paths to the other packages. Navigate to the Eisai folder within matlab and run the function below:  
-1. run_pipeline('kaggle','RFKaggle','test',25,12,1,1,'append') (run kaggle algorithm, prefix layernames with 'test', set C parameter to 25, minimum duration of 12 seconds, run individually as well as global, and append to existing annotations if any)
+The function below uses relative paths to the other packages. Navigate to the Eisai folder within matlab and run the function below:    
+1. Edit initialize_task.m to include relevant parameters, datasets, grouped channels, as well as  
+2. run_pipeline('kaggle','RFKaggle','test',25,12,1,1,'append') (run kaggle algorithm, prefix layernames with 'test', set C parameter to 25, minimum duration of 12 seconds, run individually as well as global, and append to existing annotations if any)  
 
 ## Run on linux:
-Note, these scripts were tailored for a specific project in mind. To do: generalize
+Note, these scripts were tailored for a specific project in mind. To do: generalize  
 1. Edit initialize_task.m to include relevant parameters, datasets, grouped channels, as well as 
-2. run_main - run a "large seizure" detector  
+2. Example: run a "large seizure" detector  
 a. open ssh client (putty/cygwin/terminal)  
 b. type: ssh username@borel.seas.upenn.edu, enter your password  
 c. navigate to your Eisai folder   
