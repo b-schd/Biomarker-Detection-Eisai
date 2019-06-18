@@ -1,6 +1,6 @@
-# Eisai
+# Biomarker Detection
 
-Code to automatically run seizure detection based on training annotation layers
+Code to automatically run seizure detection based on training annotation layers. This was developed with a project on seizure detection in a collaboration with the Jensen lab at UPenn and Eisai
 
 ## Requirements: 
 ieeg-matlab toolbox (https://bitbucket.org/ieeg/ieeg/downloads/)  
