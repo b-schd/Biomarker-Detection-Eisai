@@ -8,7 +8,7 @@ The algorithm extracts features from labeled seizures and non-seizures and uses 
 ## Pitfalls
 1. Due to differences in activity/recording quality between rats, individually trained algorithms performed better than global algorithms, as expected.  
 2. The kaggle algorithm leverages correlations. Because this is a two channel setup per animal, normalizations of the power spectra were done differently than originally documented (within channel instead of across channel). 
-3. Based on training/test accuracies, more data is required to improve the global classifier.
+3. Based on training/test accuracies, more data is required to improve the global classifier (versus more complex classifier). At a certain point, manual review may be more efficient.
 4. The initial algorithm's marked durations are not accurate, as the algorithm was tuned to detect the number of seizures, not necessarily duration. Proceed with caution when interpreting durations.
 
 ## Requirements: 
