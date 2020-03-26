@@ -4,17 +4,7 @@ function params = initialize_task
 %params.dataKey = humanNV_dataKey
 
 params.datasetID = {
-    'Jensen_Eisai_groupA',
-   'Jensen_Eisai_groupB',
-   'Jensen_Eisai_groupC',
-   'Jensen_Eisai_groupD',
-   'Jensen_Eisai_groupE',
-   'Jensen_Eisai_groupF',
-   'Jensen_Eisai_groupG',
-   'Jensen_Eisai_groupH',
-   'Jensen_Eisai_groupI',
-   'Jensen_Eisai_groupJ',
-   'Jensen_Eisai_groupK',
+    'JAW_72',
     };
 
 %% includes emg channels
@@ -34,7 +24,7 @@ params.groupChannels = {
     };
 
 
-params.IEEGid = 'hoameng';
-params.IEEGpwd = 'hoa_ieeglogin.bin';
+params.IEEGid = 'bscheid';
+params.IEEGpwd = 'bscheid_ieeglogin.bin';
 params.spike_layer = '';
 params.marked_seizure_layer = 'True_Seizures';
