@@ -48,7 +48,8 @@ function run_detections(dataset,model,winLen,winDisp,durationThreshold,minThresh
         	winIdx = idx*(winLen-(winLen-winDisp)); %now in secs
         	tmpIdx = winIdx*fs + startBlockPt - 1;
         	szIdx = [szIdx; tmpIdx];
-            save([base_path, 'szIdx'], 'szIdx')
+            save([base_path, 'szIdx'], 'i', 'szIdx')
+    catch
 		fprintf('error with block');
 	end
     end
