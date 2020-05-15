@@ -1,19 +1,20 @@
 
-function run_pipeline(feature,model,layer_prefix, inputC, durationThreshold, indivMode,globalMode,layerOption)
+function run_pipeline(feature, model, layer_prefix, inputC, durationThreshold, indivMode,globalMode,layerOption)
 %
 % Usage: run_pipeline(feature,model,layer_prefix, durationThreshold, indivMode,globalMode,layerOption)
-% durationThreshold : int in seconds or 'min0.5' to set automatically
-% to half of annotated detections., default is 'min0.5'
-% feature == 'LL' or 'freq'
-% model = 'SVM' or 'RF'
-% layerOption = 'append' or 'overwrite'
-% default: run_pipeline('LL','SVM','test',5,1,1,'append')
-% Seizure detection
-% run_pipeline('kaggle','RFKaggle','test',25,5,1,1,'append')
-
-addpath(genpath('../ieeg-matlab-1.13.2'));
-addpath(genpath('../portal-matlab-tools/Analysis'))
-addpath(genpath('../portal-matlab-tools/Utilities'))
+%   feature = 'LL', 'freq', 'kaggle', or 'ts'
+%   model = 'SVM', 'RF', or 'RFKaggle'
+%   layer_prefix = prefix appended to output layer name (eg. 'test')
+%   inputC =  cost for treebagger (eg. 25)
+%   durationThreshold= int in seconds or 'min0.5' to set automatically 
+%   indivMode = (0/1) flag
+%   globalMode = (0/1) flag
+%       to half of annotated detections., default is 'min0.5' (eg. 12)
+%   layerOption = 'append' or 'overwrite'
+% 
+% Examples: 
+%   default: run_pipeline('LL','SVM','test',5,1,1,'append')
+%   kaggle seizure dection: run_pipeline('kaggle','RFKaggle','test',25,5,1,1,'append')
 
 params = initialize_task;
 
@@ -141,6 +142,7 @@ for i = 1:numel(session.data) % for al
     end
     szdurations = [szdurations; tmpszdurations];
 end
+
 switch model
     case 'SVM'
         c = [0 50; 1 0];

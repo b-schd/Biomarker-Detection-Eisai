@@ -2,7 +2,7 @@
 function run_detections(dataset,model,winLen,winDisp,durationThreshold,minThreshold,mergeThreshold,ch,featFn,layer_prefix,prefix,prefix2,layerOption)
 %prefix 1 for feature name, prefix 2 for global/indiv (to reuse .mat
 %feature calculations and to differentiate layers
-
+    params = initialize_task;
     
     datasetName = dataset.snapName;
     fs = dataset.sampleRate;
@@ -15,21 +15,20 @@ function run_detections(dataset,model,winLen,winDisp,durationThreshold,minThresh
     params.winLen = winLen; %(s)
     params.winDisp = winDisp; %(s)
     params.blockLen = 60*60*1; %Length of data to get from cloud at one time.
-    params.IEEGid = 'hoameng';
-    params.IEEGpwd = 'hoa_ieeglogin.bin';
+
 %    outPrefix=calcFeature_v19_par(dataset,ch{1},params,features);
     %% extract features in segs
-    blockLenSecs = 3600;
+    blockLenSecs = 360; %Used to be 3600, cut it down for size. 
     numBlocks = ceil((stopTime-startTime)/blockLenSecs);
     startIdx = 1;
     szIdx = [];
     
-    for i = 1:numBlocks
+    for i = 1:63 %numBlocks
 	try
         	startBlockPt = round(startIdx+(blockLenSecs*(i-1)*fs));
         	endBlockPt = round(startIdx+blockLenSecs*i*fs-1);
-        	fprintf('Block %d of %d, ch%d_%d idx %d:%d...',i,numBlocks,ch(1),ch(2),startBlockPt,endBlockPt);
-        	fsave = sprintf('%s%s-%s,ch%d_%d-idx-%d-%d.mat',base_path,dataset.snapName,prefix,ch(1),ch(2),startBlockPt,endBlockPt);
+        	fprintf('Block %d of %d, ch%d_%d idx %d:%d...',i,numBlocks,ch(1),ch(end),startBlockPt,endBlockPt);
+        	fsave = sprintf('%s%s-%s,ch%d_%d-idx-%d-%d.mat',base_path,dataset.snapName,prefix,ch(1),ch(end),startBlockPt,endBlockPt);
         	if ~isempty(dir(fsave))
             		fprintf('%s - mat found, loading\n',fsave);
             		f = load(fsave);
@@ -49,7 +48,7 @@ function run_detections(dataset,model,winLen,winDisp,durationThreshold,minThresh
         	winIdx = idx*(winLen-(winLen-winDisp)); %now in secs
         	tmpIdx = winIdx*fs + startBlockPt - 1;
         	szIdx = [szIdx; tmpIdx];
-	catch
+            save([base_path, 'szIdx'], 'szIdx')
 		fprintf('error with block');
 	end
     end

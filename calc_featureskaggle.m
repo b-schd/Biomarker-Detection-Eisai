@@ -33,7 +33,7 @@ end
 
 function out = FreqCorrelation(data)
     P = rfft(data);
-    P2 = P(2:48,:); %skip 0 hz
+    P2 = P(2:48,:); %skip 0 hz, select 1-47Hz as per algorithm
     P2 = abs(P2);
     P2 = log10(P2);
     

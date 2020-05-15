@@ -1,10 +1,17 @@
 function params = initialize_task
 
+% Specify toolbox paths
+% addpath(genpath('../ieeg-matlab-1.13.2'));
+% addpath(genpath('../portal-matlab-tools/Analysis'))
+% addpath(genpath('../portal-matlab-tools/Utilities'))
+
+
 % Initialize variables
 %params.dataKey = humanNV_dataKey
+params.annotFile='/Users/bscheid/Documents/LittLab/PROJECTS/p07_PIG-PTE/test_annots.xlsx';
 
 params.datasetID = {
-    'JAW_72',
+    'PIG_PTE',
     };
 
 %% includes emg channels
@@ -27,4 +34,4 @@ params.groupChannels = {
 params.IEEGid = 'bscheid';
 params.IEEGpwd = 'bscheid_ieeglogin.bin';
 params.spike_layer = '';
-params.marked_seizure_layer = 'True_Seizures';
+params.marked_seizure_layers = {'True_Seizures', 'Non_Seizures'};
