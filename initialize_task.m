@@ -32,6 +32,6 @@ params.groupChannels = {
 
 
 params.IEEGid = 'bscheid';
-params.IEEGpwd = 'bscheid_ieeglogin.bin';
+params.IEEGpwd = '/Users/bscheid/ieeg_pwd.bin';
 params.spike_layer = '';
 params.marked_seizure_layers = {'True_Seizures', 'Non_Seizures'};

@@ -13,3 +13,5 @@ globalMode = 1;
 layerOption = 'append';  % 'append' or 'overwrite'
 
 run_pipeline(feature,'RFKaggle',layer_prefix,inputC,durationThreshold,indivMode,globalMode,layerOption)
+
+% run generate_table.m
